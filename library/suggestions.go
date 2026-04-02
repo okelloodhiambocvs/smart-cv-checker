@@ -1,29 +1,34 @@
 package library
 
-import "strings" // <--- ADD THIS
+import "strings"
 
-// GenerateSuggestions returns simple improvement suggestions
-func GenerateSuggestions(result AnalysisResult) []string {
+func GenerateSuggestions(missing []string, freq map[string]int, cvText string) []string {
 	suggestions := []string{}
 
-	if len(result.MissingKeywords) > 0 {
-		suggestions = append(suggestions, "Add missing technical/soft skills: "+strings.Join(result.MissingKeywords, ", "))
+	if len(missing) > 0 {
+		suggestions = append(suggestions, "Add missing keywords: "+strings.Join(missing, ", "))
 	}
 
-	for kw, freq := range result.KeywordFrequency {
-		if freq < 2 {
-			suggestions = append(suggestions, "Increase repetition of keyword: "+kw)
+	for word, count := range freq {
+		if count > 3 {
+			suggestions = append(suggestions, "Avoid repeating '"+word+"' too many times")
 		}
 	}
 
-	for cat, score := range result.CategoryScore {
-		if score < 50 {
-			suggestions = append(suggestions, "Improve "+cat+" skill coverage")
-		}
+	if strings.Contains(cvText, "responsibilities") || strings.Contains(cvText, "we are looking for") {
+		suggestions = append(suggestions, "Avoid copying job description phrases")
 	}
 
-	if result.MatchScore < 50 {
-		suggestions = append(suggestions, "Consider revising CV to better match job description")
+	actionWords := []string{"developed", "built", "designed", "implemented", "created"}
+	foundAction := false
+	for _, w := range actionWords {
+		if strings.Contains(cvText, w) {
+			foundAction = true
+			break
+		}
+	}
+	if !foundAction {
+		suggestions = append(suggestions, "Use action verbs like 'developed', 'built', 'designed'")
 	}
 
 	return suggestions

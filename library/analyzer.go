@@ -1,63 +1,92 @@
 package library
 
-// AnalyzeCV performs keyword matching, frequency counting, category analysis
-func AnalyzeCV(cvWords, jobWords []string) AnalysisResult {
-	cvFreq := make(map[string]int)
-	for _, w := range cvWords {
-		cvFreq[w]++
-	}
+import "strings"
+
+func AnalyzeCV(cvText, jobText string) AnalysisResult {
+	cvText = NormalizeText(cvText)
+	jobText = NormalizeText(jobText)
+
+	jobKeywords := ExtractKeywords(jobText)
+	freq := CountWordFrequency(cvText)
 
 	matched := []string{}
 	missing := []string{}
-	for _, kw := range jobWords {
-		if cvFreq[kw] > 0 {
-			matched = append(matched, kw)
+
+	// Keyword weights
+	weights := map[string]int{}
+	for _, k := range jobKeywords {
+		if len(k) > 6 {
+			weights[k] = 3
+		} else if len(k) > 4 {
+			weights[k] = 2
 		} else {
-			missing = append(missing, kw)
+			weights[k] = 1
 		}
 	}
 
-	matchScore := 0.0
-	if len(jobWords) > 0 {
-		matchScore = float64(len(matched)) / float64(len(jobWords)) * 100
-	}
+	totalWeight := 0
+	matchedWeight := 0
 
-	// Simple category analysis
-	categories := map[string][]string{
-		"Technical": {"go", "api", "docker", "kubernetes", "backend", "frontend", "database", "microservices"},
-		"Soft":      {"communication", "teamwork", "leadership", "problem-solving", "collaboration"},
-	}
-
-	categoryScore := make(map[string]float64)
-	for cat, kwList := range categories {
-		count := 0
-		for _, kw := range kwList {
-			if contains(cvWords, kw) && contains(jobWords, kw) {
-				count++
-			}
-		}
-		if len(kwList) > 0 {
-			categoryScore[cat] = float64(count) / float64(len(kwList)) * 100
+	for _, jk := range jobKeywords {
+		totalWeight += weights[jk]
+		if freq[jk] > 0 {
+			matched = append(matched, jk)
+			matchedWeight += weights[jk]
 		} else {
-			categoryScore[cat] = 0
+			missing = append(missing, jk)
 		}
 	}
+
+	// Base score
+	score := 0
+	if totalWeight > 0 {
+		score = (matchedWeight * 100) / totalWeight
+	}
+
+	// Penalties
+	penalty := 0
+	for _, count := range freq {
+		if count > 3 {
+			penalty += 2
+		}
+	}
+	if strings.Contains(cvText, "responsibilities") || strings.Contains(cvText, "we are looking for") || strings.Contains(cvText, "requirements") {
+		penalty += 20
+	}
+	if cvText == jobText {
+		penalty += 30
+	}
+	score -= penalty
+	if score < 0 {
+		score = 0
+	}
+
+	// Boost: action verbs
+	actionWords := []string{"developed", "built", "designed", "implemented", "created"}
+	boost := 0
+	for _, w := range actionWords {
+		if strings.Contains(cvText, w) {
+			boost += 3
+		}
+	}
+	score += boost
+	if score > 100 {
+		score = 100
+	}
+
+	authScore := 100 - penalty
+	if authScore < 0 {
+		authScore = 0
+	}
+
+	suggestions := GenerateSuggestions(missing, freq, cvText)
 
 	return AnalysisResult{
-		MatchedKeywords:  matched,
-		MissingKeywords:  missing,
-		KeywordFrequency: cvFreq,
-		CategoryScore:    categoryScore,
-		MatchScore:       matchScore,
+		MatchScore:        score,
+		AuthenticityScore: authScore,
+		MatchedKeywords:   matched,
+		MissingKeywords:   missing,
+		KeywordFrequency:  freq,
+		Suggestions:       suggestions,
 	}
-}
-
-// Helper function
-func contains(slice []string, item string) bool {
-	for _, s := range slice {
-		if s == item {
-			return true
-		}
-	}
-	return false
 }
