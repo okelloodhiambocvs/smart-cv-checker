@@ -2,7 +2,7 @@ package main
 
 import (
 	"reflect"
-	"smart-ats/library"
+	"smart-cv-checker/library"
 	"testing"
 )
 
