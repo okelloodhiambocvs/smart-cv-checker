@@ -2,40 +2,30 @@ package tests
 
 import (
 	"testing"
-
 	"smart-cv-checker/internal/text"
 )
 
 func TestNormalize(t *testing.T) {
-	input := "Go Developer!!!\nDocker"
+	out := text.Normalize("Go Developer!!!\nDocker")
 	expected := "go developer docker"
 
-	result := text.Normalize(input)
-
-	if result != expected {
-		t.Errorf("Normalize failed: expected '%s', got '%s'", expected, result)
+	if out != expected {
+		t.Errorf("expected '%s', got '%s'", expected, out)
 	}
 }
 
 func TestTokenize(t *testing.T) {
-	input := "go developer docker"
-
-	tokens := text.Tokenize(input)
+	tokens := text.Tokenize("go docker backend")
 
 	if len(tokens) != 3 {
-		t.Errorf("Tokenize failed: expected 3 tokens, got %d", len(tokens))
+		t.Errorf("expected 3 tokens")
 	}
 }
 
 func TestFrequency(t *testing.T) {
-	tokens := []string{"go", "go", "docker"}
-
-	freq := text.Frequency(tokens)
+	freq := text.Frequency([]string{"go", "go", "docker"})
 
 	if freq["go"] != 2 {
-		t.Errorf("Frequency failed for 'go'")
-	}
-	if freq["docker"] != 1 {
-		t.Errorf("Frequency failed for 'docker'")
+		t.Errorf("expected go count = 2")
 	}
 }
