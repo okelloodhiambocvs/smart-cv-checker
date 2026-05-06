@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"smart-cv-checker/library"
+	"smart-cv-checker/internal/ats"
 )
 
 func readFile(path string) string {
