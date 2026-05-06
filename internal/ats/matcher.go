@@ -1,9 +1,8 @@
 package ats
 
-import "smart-cv-checker/internal/text"
-
 func MatchKeywords(cvTokens, jobTokens []string) ([]string, []string) {
 	cvSet := make(map[string]bool)
+
 	for _, t := range cvTokens {
 		cvSet[t] = true
 	}

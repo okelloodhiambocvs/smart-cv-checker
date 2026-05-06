@@ -6,6 +6,5 @@ func Score(matched, missing []string) int {
 		return 0
 	}
 
-	score := (len(matched) * 100) / total
-	return score
+	return (len(matched) * 100) / total
 }

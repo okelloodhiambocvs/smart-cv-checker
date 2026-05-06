@@ -1,13 +1,11 @@
 package ats
 
-import (
-	"smart-cv-checker/internal/text"
-)
+import "smart-cv-checker/internal/text"
 
 type Result struct {
-	Score    int
-	Matched  []string
-	Missing  []string
+	Score   int
+	Matched []string
+	Missing []string
 }
 
 func Analyze(cv, job string) Result {

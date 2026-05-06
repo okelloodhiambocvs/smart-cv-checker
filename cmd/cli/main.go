@@ -16,18 +16,19 @@ func read(path string) string {
 }
 
 func main() {
-	cv := flag.String("cv", "", "")
-	job := flag.String("job", "", "")
+	cv := flag.String("cv", "", "CV file path")
+	job := flag.String("job", "", "Job file path")
 	flag.Parse()
 
 	if *cv == "" || *job == "" {
-		fmt.Println("usage: -cv file -job file")
+		fmt.Println("Usage: go run ./cmd/cli -cv <cv_file> -job <job_file>")
 		return
 	}
 
-	res := ats.Analyze(read(*cv), read(*job))
+	result := ats.Analyze(read(*cv), read(*job))
 
-	fmt.Println("MATCH SCORE:", res.Score)
-	fmt.Println("MATCHED:", res.Matched)
-	fmt.Println("MISSING:", res.Missing)
+	fmt.Println("====== ATS RESULT ======")
+	fmt.Println("Score:", result.Score)
+	fmt.Println("Matched:", result.Matched)
+	fmt.Println("Missing:", result.Missing)
 }
