@@ -10,6 +10,7 @@ type Result struct {
 	FoundSections      []string
 	MissingSections    []string
 	KeywordFrequency   []FrequencyReport
+	CategoryAnalysis []CategoryReport
 }
 
 func Analyze(cv, job string) Result {
@@ -26,6 +27,8 @@ func Analyze(cv, job string) Result {
 	
 	frequency := AnalyzeKeywordFrequency(cvTokens)
 
+	categories := AnalyzeCategories(cvTokens)
+
 	return Result{
 	Score:            score,
 	Matched:          matched,
@@ -34,5 +37,6 @@ func Analyze(cv, job string) Result {
 	FoundSections:    sections.Found,
 	MissingSections:  sections.Missing,
 	KeywordFrequency: frequency,
+	CategoryAnalysis: categories,
 }
 }

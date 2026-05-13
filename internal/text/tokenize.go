@@ -8,7 +8,7 @@ func Tokenize(input string) []string {
 	var cleaned []string
 
 	for _, w := range words {
-		if !StopWords[w] {
+		if IsRelevantToken(w) && !StopWords[w] {
 			cleaned = append(cleaned, w)
 		}
 	}
