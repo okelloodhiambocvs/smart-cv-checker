@@ -28,10 +28,12 @@ func main() {
 
 	result := ats.Analyze(read(*cv), read(*job))
 
-	fmt.Println("\n====== AJIRASCAN ATS REPORT ======")
-
-	// Score
+	fmt.Println("====== AJIRASCAN ATS REPORT ======")
 	fmt.Println()
+
+	fmt.Println("Detected Job Type:", result.JobType)
+	fmt.Println()
+
 	fmt.Println("ATS Score:", result.Score)
 
 	switch {
@@ -45,49 +47,50 @@ func main() {
 		fmt.Println("ATS Rating: Weak Match")
 	}
 
-	// Matched Keywords
 	fmt.Println()
+
 	fmt.Println("Matched Keywords:")
 	for _, m := range result.Matched {
 		fmt.Println("-", m)
 	}
 
-	// Missing Keywords
 	fmt.Println()
+
 	fmt.Println("Missing Keywords:")
 	for _, m := range result.Missing {
 		fmt.Println("-", m)
 	}
 
-	// Keyword Frequency
 	fmt.Println()
+
 	fmt.Println("Keyword Frequency:")
 	for _, item := range result.KeywordFrequency {
 		fmt.Printf("- %s: %d\n", item.Keyword, item.Count)
 	}
 
-	// Section Detection
 	fmt.Println()
+
 	fmt.Println("Detected Sections:")
 	for _, s := range result.FoundSections {
 		fmt.Println("✓", s)
 	}
 
 	fmt.Println()
+
 	fmt.Println("Missing Sections:")
 	for _, s := range result.MissingSections {
 		fmt.Println("✗", s)
 	}
 
-	// Skill Category Analysis (STEP 33)
 	fmt.Println()
+
 	fmt.Println("Skill Category Analysis:")
 	for _, c := range result.CategoryAnalysis {
 		fmt.Printf("- %s: %d%% match\n", c.Category, c.Score)
 	}
 
-	// Suggestions
 	fmt.Println()
+
 	fmt.Println("Suggestions:")
 
 	for _, s := range result.Suggestions {
@@ -95,11 +98,13 @@ func main() {
 	}
 
 	sectionSuggestions := ats.SectionSuggestions(result.MissingSections)
+
 	for _, s := range sectionSuggestions {
 		fmt.Println("-", s)
 	}
 
 	frequencySuggestions := ats.FrequencySuggestions(result.KeywordFrequency)
+
 	for _, s := range frequencySuggestions {
 		fmt.Println("-", s)
 	}

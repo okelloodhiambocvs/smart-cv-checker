@@ -30,3 +30,33 @@ func getWeight(keyword string) int {
 
 	return 1
 }
+
+func ApplyJobContextBoost(score int, jobType JobType, matched []string) int {
+	boost := 0
+
+	switch jobType {
+
+	case TechJob:
+		for _, k := range matched {
+			if KeywordWeights[k] >= 5 {
+				boost += 2
+			}
+		}
+
+	case NGOJob:
+		for _, k := range matched {
+			if k == "fundraising" || k == "advocacy" {
+				boost += 3
+			}
+		}
+
+	case CommunicationJob:
+		for _, k := range matched {
+			if k == "communication" || k == "media" {
+				boost += 2
+			}
+		}
+	}
+
+	return score + boost
+}

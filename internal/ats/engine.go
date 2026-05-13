@@ -10,7 +10,8 @@ type Result struct {
 	FoundSections      []string
 	MissingSections    []string
 	KeywordFrequency   []FrequencyReport
-	CategoryAnalysis []CategoryReport
+	CategoryAnalysis   []CategoryReport
+	JobType            JobType
 }
 
 func Analyze(cv, job string) Result {
@@ -19,24 +20,26 @@ func Analyze(cv, job string) Result {
 
 	matched, missing := MatchKeywords(cvTokens, jobTokens)
 
-	score := WeightedScore(matched, missing)
-
-	suggestions := Suggestions(missing)
-	
 	sections := DetectSections(cv)
-	
 	frequency := AnalyzeKeywordFrequency(cvTokens)
-
 	categories := AnalyzeCategories(cvTokens)
 
+	jobType := DetectJobType(job)
+
+	score := WeightedScore(matched, missing)
+	score = ApplyJobContextBoost(score, jobType, matched)
+
+	suggestions := Suggestions(missing)
+
 	return Result{
-	Score:            score,
-	Matched:          matched,
-	Missing:          missing,
-	Suggestions:      suggestions,
-	FoundSections:    sections.Found,
-	MissingSections:  sections.Missing,
-	KeywordFrequency: frequency,
-	CategoryAnalysis: categories,
-}
+		Score:             score,
+		Matched:           matched,
+		Missing:           missing,
+		Suggestions:       suggestions,
+		FoundSections:     sections.Found,
+		MissingSections:   sections.Missing,
+		KeywordFrequency:  frequency,
+		CategoryAnalysis:  categories,
+		JobType:           jobType,
+	}
 }
