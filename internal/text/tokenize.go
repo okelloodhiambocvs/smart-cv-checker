@@ -2,6 +2,16 @@ package text
 
 import "strings"
 
-func Tokenize(text string) []string {
-	return strings.Fields(text)
+func Tokenize(input string) []string {
+	words := strings.Fields(input)
+
+	var cleaned []string
+
+	for _, w := range words {
+		if !StopWords[w] {
+			cleaned = append(cleaned, w)
+		}
+	}
+
+	return cleaned
 }
