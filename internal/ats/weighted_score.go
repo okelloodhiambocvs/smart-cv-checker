@@ -18,6 +18,10 @@ func WeightedScore(matched, missing []string) int {
 		return 0
 	}
 
+	if len(matched)+len(missing) == 0 {
+		return 0
+	}
+
 	return (matchedScore * 100) / totalScore
 }
 
