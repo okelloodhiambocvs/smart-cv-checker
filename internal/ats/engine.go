@@ -3,10 +3,12 @@ package ats
 import "ajirascan/internal/text"
 
 type Result struct {
-	Score       int
-	Matched     []string
-	Missing     []string
-	Suggestions []string
+	Score          int
+	Matched        []string
+	Missing        []string
+	Suggestions    []string
+	FoundSections  []string
+	MissingSections []string
 }
 
 func Analyze(cv, job string) Result {
@@ -18,11 +20,15 @@ func Analyze(cv, job string) Result {
 	score := Score(matched, missing)
 
 	suggestions := Suggestions(missing)
+	
+	sections := DetectSections(cv)
 
 	return Result{
-		Score:       score,
-		Matched:     matched,
-		Missing:     missing,
-		Suggestions: suggestions,
-	}
+	Score:           score,
+	Matched:         matched,
+	Missing:         missing,
+	Suggestions:     suggestions,
+	FoundSections:   sections.Found,
+	MissingSections: sections.Missing,
+}
 }

@@ -14,3 +14,16 @@ func Suggestions(missing []string) []string {
 
 	return suggestions
 }
+
+func SectionSuggestions(missingSections []string) []string {
+	var suggestions []string
+
+	for _, section := range missingSections {
+		suggestions = append(
+			suggestions,
+			fmt.Sprintf("Add a '%s' section to improve ATS completeness", section),
+		)
+	}
+
+	return suggestions
+}

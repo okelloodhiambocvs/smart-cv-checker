@@ -12,14 +12,12 @@ func read(path string) string {
 	if err != nil {
 		panic(err)
 	}
-
 	return string(data)
 }
 
 func main() {
 	cv := flag.String("cv", "", "CV file path")
 	job := flag.String("job", "", "Job file path")
-
 	flag.Parse()
 
 	if *cv == "" || *job == "" {
@@ -47,8 +45,27 @@ func main() {
 	}
 
 	fmt.Println()
+	fmt.Println("Detected Sections:")
+	for _, s := range result.FoundSections {
+		fmt.Println("✓", s)
+	}
+
+	fmt.Println()
+	fmt.Println("Missing Sections:")
+	for _, s := range result.MissingSections {
+		fmt.Println("✗", s)
+	}
+
+	fmt.Println()
 	fmt.Println("Suggestions:")
+
 	for _, s := range result.Suggestions {
+		fmt.Println("-", s)
+	}
+
+	sectionSuggestions := ats.SectionSuggestions(result.MissingSections)
+
+	for _, s := range sectionSuggestions {
 		fmt.Println("-", s)
 	}
 }
