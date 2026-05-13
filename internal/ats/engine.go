@@ -17,7 +17,7 @@ func Analyze(cv, job string) Result {
 
 	matched, missing := MatchKeywords(cvTokens, jobTokens)
 
-	score := Score(matched, missing)
+	score := WeightedScore(matched, missing)
 
 	suggestions := Suggestions(missing)
 	

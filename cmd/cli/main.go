@@ -12,12 +12,14 @@ func read(path string) string {
 	if err != nil {
 		panic(err)
 	}
+
 	return string(data)
 }
 
 func main() {
 	cv := flag.String("cv", "", "CV file path")
 	job := flag.String("job", "", "Job file path")
+
 	flag.Parse()
 
 	if *cv == "" || *job == "" {
@@ -31,6 +33,17 @@ func main() {
 
 	fmt.Println()
 	fmt.Println("ATS Score:", result.Score)
+
+	switch {
+	case result.Score >= 80:
+		fmt.Println("ATS Rating: Excellent Match")
+	case result.Score >= 60:
+		fmt.Println("ATS Rating: Strong Match")
+	case result.Score >= 40:
+		fmt.Println("ATS Rating: Moderate Match")
+	default:
+		fmt.Println("ATS Rating: Weak Match")
+	}
 
 	fmt.Println()
 	fmt.Println("Matched Keywords:")
