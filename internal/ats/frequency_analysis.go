@@ -8,7 +8,13 @@ type FrequencyReport struct {
 }
 
 func AnalyzeKeywordFrequency(tokens []string) []FrequencyReport {
-	freqMap := text.Frequency(tokens)
+	freqMap := make(map[string]int)
+
+	for _, t := range tokens {
+		if text.IsRelevantToken(t) && !text.StopWords[t] {
+			freqMap[t]++
+		}
+	}
 
 	var report []FrequencyReport
 
