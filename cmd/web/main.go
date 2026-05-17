@@ -10,6 +10,7 @@ import (
 func main() {
 
 	http.HandleFunc("/", web.HomeHandler)
+	http.HandleFunc("/analyze", web.HomeHandler)
 
 	fmt.Println("Server running on http://localhost:8080")
 
