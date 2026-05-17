@@ -1,24 +1,31 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>AjiraScan</title>
-
-    <link rel="stylesheet" href="/static/style.css">
-
 </head>
 
 <body>
 
 <h1>AjiraScan ATS Scanner</h1>
 
-<form method="POST" action="/analyze">
+<form
+method="POST"
+action="/analyze"
+enctype="multipart/form-data">
 
 <textarea
 name="cv"
 rows="12"
 cols="60"
 placeholder="Paste CV here"></textarea>
+
+<br><br>
+
+<p>Or upload CV file (.txt)</p>
+
+<input
+type="file"
+name="cvfile">
 
 <br><br>
 
@@ -35,20 +42,6 @@ Analyze CV
 </button>
 
 </form>
-
-<hr>
-
-<h2>ATS Result</h2>
-
-<p>
-<strong>Score:</strong>
-{{.Score}}
-</p>
-
-<p>
-<strong>Job Type:</strong>
-{{.JobType}}
-</p>
 
 </body>
 </html>
