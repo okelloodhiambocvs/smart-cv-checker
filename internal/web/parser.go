@@ -2,9 +2,9 @@ package web
 
 import (
 	"io"
-	"regexp"
 	"strings"
 
+	"github.com/ledongthuc/pdf"
 	"github.com/nguyenthenguyen/docx"
 )
 
@@ -26,16 +26,39 @@ func ReadDOCX(path string) (string, error) {
 
 	defer doc.Close()
 
-	// Extract raw content
-	raw := doc.Editable().GetContent()
+	text := doc.Editable().GetContent()
 
-	// Remove XML tags
-	re := regexp.MustCompile(`<[^>]*>`)
+	return text, nil
+}
 
-	clean := re.ReplaceAllString(raw, " ")
+func ReadPDF(path string) (string, error) {
 
-	// Normalize spacing
-	clean = strings.Join(strings.Fields(clean), " ")
+	file, reader, err := pdf.Open(path)
 
-	return clean, nil
+	if err != nil {
+		return "", err
+	}
+
+	defer file.Close()
+
+	var builder strings.Builder
+
+	totalPages := reader.NumPage()
+
+	for i := 1; i <= totalPages; i++ {
+
+		page := reader.Page(i)
+
+		if page.V.IsNull() {
+			continue
+		}
+
+		text, err := page.GetPlainText(nil)
+
+		if err == nil {
+			builder.WriteString(text)
+		}
+	}
+
+	return builder.String(), nil
 }
