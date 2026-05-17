@@ -20,6 +20,20 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	cv := r.FormValue("cv")
+
+	file, _, err := r.FormFile("cvfile")
+
+	if err == nil {
+
+		defer file.Close()
+
+		buf := make([]byte, 1024*1024)
+
+		n, _ := file.Read(buf)
+
+		cv = string(buf[:n])
+	}
+
 	job := r.FormValue("job")
 
 	result := ats.Analyze(cv, job)
