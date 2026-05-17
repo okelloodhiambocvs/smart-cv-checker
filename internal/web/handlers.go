@@ -2,7 +2,10 @@ package web
 
 import (
 	"html/template"
+	"io"
 	"net/http"
+	"os"
+	"strings"
 
 	"ajirascan/internal/ats"
 )
@@ -21,17 +24,38 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 	cv := r.FormValue("cv")
 
-	file, _, err := r.FormFile("cvfile")
+	file, header, err := r.FormFile("cvfile")
 
 	if err == nil {
 
 		defer file.Close()
 
-		buf := make([]byte, 1024*1024)
+		filename := strings.ToLower(header.Filename)
 
-		n, _ := file.Read(buf)
+		switch {
 
-		cv = string(buf[:n])
+		case strings.HasSuffix(filename, ".txt"):
+
+			cv = ReadTXT(file)
+
+		case strings.HasSuffix(filename, ".docx"):
+
+			tempPath := "temp.docx"
+
+			tempFile, _ := os.Create(tempPath)
+
+			io.Copy(tempFile, file)
+
+			tempFile.Close()
+
+			parsed, parseErr := ReadDOCX(tempPath)
+
+			if parseErr == nil {
+				cv = parsed
+			}
+
+			os.Remove(tempPath)
+		}
 	}
 
 	job := r.FormValue("job")
