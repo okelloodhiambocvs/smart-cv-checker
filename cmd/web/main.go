@@ -3,13 +3,13 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"ajirascan/internal/web"
 )
 
 func main() {
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "AjiraScan Web Server Running")
-	})
+	http.HandleFunc("/", web.HomeHandler)
 
 	fmt.Println("Server running on http://localhost:8080")
 
